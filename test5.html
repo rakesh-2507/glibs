@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Unique Jewelry</title>
+    <title>Glibs</title>
     <style>
         :root {
             --bg-color: radial-gradient(circle, #ebd7d7 0%, #f5b5b0 70%, #eab7b1 100%);
@@ -243,7 +243,7 @@
             <audio id="myAudio" src="/music_loop.mp3"></audio>
 
             <span id="playBtn" class="icon">
-                <i class="fa-solid fa-play"></i>
+                <i class="fa fa-play" aria-hidden="true"></i>
             </span>
             <span class="icon" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></span>
         </nav>
@@ -745,16 +745,16 @@
         playBtn.addEventListener("click", () => {
             if (audio.paused) {
                 audio.play();
-                playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                playBtn.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
             } else {
                 audio.pause();
-                playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                playBtn.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
             }
         });
 
         // also reset icon when audio finishes
         audio.addEventListener("ended", () => {
-            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            playBtn.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
         });
 
 

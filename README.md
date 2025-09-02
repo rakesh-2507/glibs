@@ -112,3 +112,5 @@ git clone (https://github.com/rakesh-2507/glibs.git)
 - [Test Page 1](https://rakesh-2507.github.io/glibs/test1.html)
 - [Test Page 2](https://rakesh-2507.github.io/glibs/test2.html)  
 - [Test Page 3](https://rakesh-2507.github.io/glibs/test3.html)  *** This will **refresh the page completely**, so the view returns to the standard scroll-based layout ***
+- [Test Page 4](https://rakesh-2507.github.io/glibs/test4.html) 
+- [Test Page 5](https://rakesh-2507.github.io/glibs/test5.html)  *** Interactive, scroll-driven 3D product showcase built with Three.js, GSAP and vanilla JS — textured model viewer, texture selectors, dark mode and audio controls ***
