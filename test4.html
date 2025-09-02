@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glibs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 300vh;
+            font-family: 'Times New Roman', serif;
+            background: radial-gradient(circle, #ebd7d7 0%, #f5b5b0 70%, #eab7b1 100%);
+            color: #2c1a1a;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+        }
+
+        section {
+            scroll-snap-align: start;
+        }
+
+        #three-container {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #text-section1,
+        #text-section2,
+        #text-section3 {
+            transition: transform 0.6s ease, opacity 0.6s ease;
+        }
+
+        #text-section1 {
+            position: fixed;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 15% 15% 0 0;
+            align-items: flex-end;
+            transform: translateX(0);
+            opacity: 1;
+            font-family: "Playfair Display SC", serif;
+        }
+
+        #text-section2 {
+            position: fixed;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 15% 0 0 20%;
+            align-items: flex-start;
+            transform: translateX(-10%);
+            opacity: 0;
+        }
+
+        #text-section3 {
+            position: fixed;
+            display: flex;
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            text-align: center;
+            color: #2c1a1a;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            max-width: 450px;
+        }
+
+        .btn,
+        .view {
+            border: 1px solid #2c1a1a;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: transparent;
+            transition: 0.3s;
+        }
+
+        .btn:hover,
+        .view:hover {
+            background: rgba(44, 26, 26, 0.1);
+        }
+
+        .custom-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 53px 180px;
+            pointer-events: all;
+            position: absolute;
+            z-index: 5;
+        }
+
+        .brand {
+            font-size: 2.5625rem;
+            color: #52322B;
+        }
+
+        .brand span {
+            font-weight: 200;
+            margin-left: 5px;
+            font-size: 15px;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 79px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #52322B;
+            font-weight: 500;
+        }
+
+        .icon {
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        #nav-dots {
+            position: fixed;
+            top: 50%;
+            right: 10%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            transition: background 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: #2c1a1a;
+            transform: scale(1.3);
+        }
+
+        .glibs-bg {
+            font-weight: 400;
+            font-family: math;
+            font-size: 16.3125rem;
+            line-height: 100%;
+            letter-spacing: -0.04em;
+            color: #cb6b56;
+            opacity: 0.1;
+            position: absolute;
+            top: 43%;
+            left: 10%;
+            transform: translateY(-70%);
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
+</head>
+
+<body>
+    <header class="custom-header">
+        <div class="brand">GLIBS <span>BY Lorem</span></div>
+        <nav class="menu">
+            <a href="/index.html" target="_blank">Know more</a>
+            <span class="icon"><i class="fa-solid fa-play"></i></span>
+            <span class="icon"><i class="fa-solid fa-moon"></i></span>
+        </nav>
+    </header>
+
+    <div id="three-container"></div>
+
+    <div id="text-section1">
+        <h1>BEVERAGES<br>BY GLIBS</h1>
+        <p>Discover a curated selection of refreshing drinks crafted with precision, flavor, and style.</p>
+        <button class="btn">Scroll ↓</button>
+    </div>
+    <div id="text-section2">
+        <h2 class="glibs-bg">Crafted</h2>
+        <h1>CRAFTED<br>FOR TASTE</h1>
+        <p>Experience unique blends and bold flavors that redefine fine beverages.</p>
+    </div>
+    <div id="text-section3">
+        <h1>EXPERIENCE ELEGANCE</h1>
+        <p>Immerse yourself in the artistry of premium jewelry where craftsmanship meets timeless design.</p>
+        <button class="view">View In 3D</button>
+
+    </div>
+
+    <div id="nav-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/TextGeometry.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+
+    <script>
+        const s1 = document.getElementById("text-section1");
+        const s2 = document.getElementById("text-section2");
+        const s3 = document.getElementById("text-section3");
+        const dots = document.querySelectorAll(".dot");
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(10, 5, 10);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById("three-container").appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; controls.enablePan = false; controls.enableZoom = false;
+
+        // 3D Model Loader
+        const loader = new THREE.GLTFLoader();
+        let model, posX, posY, posZ, scaleX, scaleY, scaleZ;
+        loader.load("models/glibs.glb", function (gltf) {
+            model = gltf.scene;
+            model.position.set(-4, -3, 0.5);
+            model.scale.set(2, 2, 2);
+            scene.add(model);
+            posX = gsap.quickTo(model.position, "x", { duration: 0.3, ease: "power2.out" });
+            posY = gsap.quickTo(model.position, "y", { duration: 0.3, ease: "power2.out" });
+            posZ = gsap.quickTo(model.position, "z", { duration: 0.3, ease: "power2.out" });
+            scaleX = gsap.quickTo(model.scale, "x", { duration: 0.3, ease: "power2.out" });
+            scaleY = gsap.quickTo(model.scale, "y", { duration: 0.3, ease: "power2.out" });
+            scaleZ = gsap.quickTo(model.scale, "z", { duration: 0.3, ease: "power2.out" });
+        });
+
+        // 3D Text
+        let textMesh;
+        const fontLoader = new THREE.FontLoader();
+        fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+            const textGeometry = new THREE.TextGeometry('Gl  bs', {
+                font: font, size: 7.5, height: 0.2, curveSegments: 18, bevelEnabled: false
+            });
+            const textMaterial = new THREE.MeshBasicMaterial({ color: 0xcb6b56, transparent: true, opacity: 0 });
+            textMesh = new THREE.Mesh(textGeometry, textMaterial);
+            textMesh.position.set(-15, -5, 2);
+            textMesh.rotation.y = Math.PI * 0.29;
+            scene.add(textMesh);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (model) model.rotation.y += 0.003;
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Scroll Logic
+        let scrollProgress = 0, targetProgress = 0;
+        window.addEventListener("scroll", () => {
+            targetProgress = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+        });
+        gsap.ticker.add(() => {
+            scrollProgress += (targetProgress - scrollProgress) * 0.06;
+            updateAnimations(scrollProgress);
+        });
+
+        function updateAnimations(progress) {
+            const split1 = 0.33, split2 = 0.66;
+
+            // Model animation
+            if (model) {
+                if (progress < split1) {
+                    let p1 = progress / split1;
+                    posX(-8 + 5 * p1); posY(-7 + 2 * p1); posZ(1);
+                    scaleX(6 - 1 * p1); scaleY(5 - 1 * p1); scaleZ(6 - 1 * p1);
+                } else if (progress < split2) {
+                    posX(5.5); posY(-0.9); posZ(0.5);
+                    scaleX(2.5); scaleY(2.5); scaleZ(2.5);
+                } else {
+                    let p3 = (progress - split2) / (1 - split2);
+                    posX(5.5 + (-3 - 5.5) * p3);
+                    posY(-0.9 + (-3 + 0.9) * p3);
+                    posZ(0.5 + (-3 - 0.5) * p3);
+                    scaleX(2.5 + (3.7 - 2.5) * p3);
+                    scaleY(2.5 + (3.7 - 2.5) * p3);
+                    scaleZ(2.5 + (3.7 - 2.5) * p3);
+                }
+            }
+
+            // Text sections
+            function showSection(section, opacity, translateX = 0) {
+                section.style.opacity = opacity;
+                section.style.transform = `translateX(${translateX}%)`;
+            }
+
+            if (progress < split1) {
+                let p = progress / split1;
+                showSection(s1, 1 - p, 0);
+                showSection(s2, 0, -50);
+                s3.style.opacity = 0;
+                if (textMesh) textMesh.material.opacity = 0;
+            } else if (progress < split2) {
+                let p = (progress - split1) / (split2 - split1);
+                showSection(s1, 0, 50);
+                showSection(s2, 1 - p, 0);
+                s3.style.opacity = 0;
+                if (textMesh) textMesh.material.opacity = 0;
+            } else {
+                let p = (progress - split2) / (1 - split2);
+                showSection(s1, 0, 50);
+                showSection(s2, 0, -50);
+                s3.style.opacity = p;
+                if (textMesh) textMesh.material.opacity = p * 0.1;
+            }
+
+            // Dots
+            dots.forEach(dot => dot.classList.remove("active"));
+            if (progress < split1) dots[0].classList.add("active");
+            else if (progress < split2) dots[1].classList.add("active");
+            else dots[2].classList.add("active");
+        }
+
+        window.addEventListener("resize", () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+
+</html>
