@@ -230,6 +230,14 @@
             display: none;
             z-index: 10000;
         }
+
+        .textured {
+            background-size: cover;
+            background-repeat: no-repeat;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
@@ -252,20 +260,38 @@
     <div id="three-container"></div>
 
     <div id="text-section1">
-        <h1>BEVERAGES<br>BY GLIBS</h1>
-        <p>Discover a curated selection of refreshing drinks crafted with precision, flavor, and style.</p>
+        <h1>Natural Wellness,<br>Bottled Fresh</h1>
+        <p>From ginger shots to ragi buttermilk – drink better, live better with GLYBS.</p>
         <button class="btn">Scroll ↓</button>
     </div>
     <div id="text-section2">
-        <h2 class="glibs-bg">Nimbu Sabja</h2>
-        <h1>CRAFTED<br>FOR TASTE</h1>
-        <p>Experience unique blends and bold flavors that redefine fine beverages.</p>
+        <h2 class="glibs-bg">Who We Are</h2>
+        <h1>About Us</h1>
+        <p>At *GLYBS Drinks*, we believe that nature holds the key to health and vitality. That’s why we craft our
+            beverages using traditional Indian ingredients like ginger, turmeric, neem, ragi, and sabja – combining
+            ancient wisdom with modern convenience.</p>
+        <p>Founded with a mission to provide *clean, tasty, and functional drinks, we produce a range of **buttermilks,
+            lassis, herbal shots, and refreshing coolers* that support digestion, immunity, and hydration.
+        </p>
     </div>
     <div id="text-section3">
-        <h1>EXPERIENCE ELEGANCE</h1>
-        <p>Immerse yourself in the artistry of premium jewelry where craftsmanship meets timeless design.</p>
-        <button class="view">View In 3D</button>
+        <h1>What We Stand For</h1>
+        <p>* 🌿 *Natural Ingredients* – No artificial preservatives or colors.</p>
+        <p>* ❄ *Cold-Chained Freshness* – Store below 5°C to retain freshness.</p>
+        <p>* 💪 *Wellness First* – Every sip is designed to benefit your body.</p>
+        <button class="view">View Products</button>
     </div>
+
+    <!-- 3D Mode Text Overlays -->
+    <div id="leftText3D" style="position:fixed; top:30%; left:10%; z-index:99999; max-width:600px; display:none;">
+        <h1>Pick a Beverage</h1>
+    </div>
+
+    <div id="rightText3D"
+        style="position:fixed; top:30%; right:10%; z-index:99999; max-width:400px; text-align:right; display:none;text-align: justify;">
+        <p style="font-size: 35px;">To make the GLIBS as your fav...</p>
+    </div>
+
 
     <div id="nav-dots">
         <span class="dot active"></span>
@@ -541,6 +567,10 @@
 
             // 🔥 Show texture spheres
             toggleSelectors(true);
+
+            document.getElementById("leftText3D").style.display = "block";
+            document.getElementById("rightText3D").style.display = "block";
+            document.body.style.background = "#6d6767";
         });
 
         exit3DBtn.addEventListener("click", () => {
@@ -549,6 +579,10 @@
 
             // Force reload without cache
             location.href = location.href;
+
+            document.getElementById("leftText3D").style.display = "none";
+            document.getElementById("rightText3D").style.display = "none";
+            document.body.style.background = "var(--bg-color)"
         });
 
         window.addEventListener("resize", () => {
@@ -559,27 +593,78 @@
 
         // === Texture Options for 3D Mode ===
         const textureOptions = [
-            textureLoader.load("textures/glass.png"),
-            textureLoader.load("textures/lemon.png"),
-            textureLoader.load("textures/nimbu.png"),
-            textureLoader.load("textures/ragi.png"),
+            textureLoader.load("images/nimbu_sabja.jpg"),
+            textureLoader.load("images/spiced_Butter_milk.jpg"),
+            textureLoader.load("images/jeera_butter_milk.jpg"),
+            textureLoader.load("images/sabja_lassi.jpg"),
+            textureLoader.load("images/ragi_butter_milk.jpg"),
+            textureLoader.load("images/garlic_shots.jpg"),
+            textureLoader.load("images/turmeric_shots.jpg"),
+            textureLoader.load("images/ginger_turmeric_shots.jpg"),
+            textureLoader.load("images/amla_shots.jpg"),
+            textureLoader.load("images/neem_shoots.jpg"),
+            textureLoader.load("images/garlic_shots.jpg"),
+        ];
+
+        const textureInfo = [
+            { title: "🍋 NIMBU SABJA", desc: "Refreshing lemon drink with sabja seeds, offering instant cooling, natural hydration, and a zesty twist to your day." },
+            { title: "🥛 SPICED BUTTERMILK", desc: "Authentic masala chaas blended with ginger, chili, and curry leaves to cool your system and support digestion." },
+            { title: "🧂 JEERA BUTTERMILK", desc: "Traditional buttermilk infused with roasted jeera, ginger, and herbs – soothing, digestive, and naturally refreshing." },
+            { title: "🥤 SABJA LASSI", desc: "Sweet, creamy lassi enriched with sabja seeds – a perfect cooling treat that balances taste and digestion." },
+            { title: "🌾 RAGI BUTTERMILK", desc: "Wholesome fusion of ragi and chaas, rich in calcium, cooling the body while boosting gut health." },
+            { title: "🫚 GINGER SHOT", desc: "Strong, fiery ginger shot blended with honey – boosts immunity, aids digestion, and keeps colds away naturally." },
+            { title: "🟡 TURMERIC SHOT", desc: "Golden turmeric shot with honey, rich in curcumin – supports skin glow, joint strength, and inflammation relief." },
+            { title: "🟠 GINGER TURMERIC SHOT", desc: "A powerful blend of fresh ginger and turmeric, boosting immunity, digestion, and overall wellness with natural goodness." },
+            { title: "🍏 AMLA SHOT", desc: "Vitamin C-rich amla shot with honey – strengthens immunity, aids detox, and helps slow down aging naturally." },
+            { title: "🌿 NEEM SHOT", desc: "Bitter yet powerful neem shot with ginger and honey – detoxifies, purifies skin, and boosts overall immunity." },
+            { title: "🧄 GARLIC SHOT", desc: "Pungent garlic shot with ginger and honey – supports heart health, boosts immunity, and strengthens natural defenses." },
         ];
 
         let selectorSpheres = [];
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
 
-        // Create texture selector spheres (hidden until 3D mode)
         function createTextureSelectors() {
-            const sphereGeo = new THREE.SphereGeometry(0.4, 32, 32);
+            const sphereGeo = new THREE.SphereGeometry(0.12, 20, 20);
+
+            const baseY = -1.5;  // vertical position (near bottom of screen)
+            const baseZ = -6;    // distance in front of camera
+            const spacing = 0.5; // space between spheres
+
+            const totalWidth = (textureOptions.length - 1) * spacing;
+
             for (let i = 0; i < textureOptions.length; i++) {
+                // Main sphere
                 const sphereMat = new THREE.MeshBasicMaterial({ map: textureOptions[i] });
                 const sphere = new THREE.Mesh(sphereGeo, sphereMat);
-                sphere.position.set(3, -2 + i * 1.2, 3); // stack vertically
-                sphere.visible = false; // initially hidden
-                scene.add(sphere);
+
+                // Border sphere (slightly bigger, back-face)
+                const borderGeo = new THREE.SphereGeometry(0.14, 20, 20);
+                const borderMat = new THREE.MeshBasicMaterial({
+                    color: 0xacacac,
+                    side: THREE.BackSide
+                });
+                const border = new THREE.Mesh(borderGeo, borderMat);
+
+                // Arrange horizontally
+                const xPos = -totalWidth / 2 + i * spacing;
+
+                border.position.set(xPos, baseY, baseZ);
+                sphere.position.set(xPos, baseY, baseZ);
+
+                // Attach to camera
+                camera.add(border);
+                camera.add(sphere);
+
+                // Hidden until 3D mode
+                sphere.visible = false;
+                border.visible = false;
+
                 selectorSpheres.push(sphere);
+                selectorSpheres.push(border);
             }
+
+            scene.add(camera);
         }
         createTextureSelectors();
 
@@ -602,86 +687,39 @@
                 const clickedSphere = intersects[0].object;
                 const chosenTexture = clickedSphere.material.map;
 
+                // find index of clicked texture
+                const index = textureOptions.findIndex(tex => tex === chosenTexture);
+
+                // apply texture to model
                 model.traverse(child => {
                     if (child.isMesh) {
                         child.material.map = chosenTexture;
                         child.material.needsUpdate = true;
                     }
                 });
+
+                // 🔥 Apply texture to H1 and P (convert texture to CSS url)
+                const textureURL = chosenTexture.image.currentSrc || chosenTexture.image.src;
+
+                const leftH1 = document.querySelector("#leftText3D h1");
+                const rightP = document.querySelector("#rightText3D p");
+
+                if (leftH1 && rightP) {
+                    leftH1.classList.add("textured");
+                    rightP.classList.add("textured");
+
+                    leftH1.style.backgroundImage = `url(${textureURL})`;
+                    rightP.style.backgroundImage = `url(${textureURL})`;
+                }
+
+                // update overlay texts from textureInfo
+                if (index >= 0 && textureInfo[index]) {
+                    leftH1.textContent = textureInfo[index].title;
+                    rightP.textContent = textureInfo[index].desc;
+                }
             }
         });
 
-        // Create texture selector spheres (stick to camera, bottom center, horizontal row, with border)
-        function createTextureSelectors() {
-            const sphereGeo = new THREE.SphereGeometry(0.2, 20, 20);
-
-            // Base offsets for bottom center
-            const baseX = 0;     // centered horizontally
-            const baseY = -1.5;  // near bottom
-            const baseZ = -6;    // in front of camera
-
-            const spacing = 1;   // horizontal spacing between spheres
-
-            for (let i = 0; i < textureOptions.length; i++) {
-                // Main sphere with texture
-                const sphereMat = new THREE.MeshBasicMaterial({ map: textureOptions[i] });
-                const sphere = new THREE.Mesh(sphereGeo, sphereMat);
-
-                // --- BORDER sphere (slightly bigger, back-face only) ---
-                const borderGeo = new THREE.SphereGeometry(0.22, 20, 20);
-                const borderMat = new THREE.MeshBasicMaterial({
-                    color: 0xacacac,       // border color
-                    side: THREE.BackSide   // only render back faces
-                });
-                const border = new THREE.Mesh(borderGeo, borderMat);
-
-                // Attach to camera so they stay fixed
-                camera.add(border);
-                camera.add(sphere);
-
-                // Arrange horizontally around center
-                const totalWidth = (textureOptions.length - 1) * spacing;
-                const xPos = baseX - totalWidth / 2 + i * spacing;
-
-                border.position.set(xPos, baseY, baseZ);
-                sphere.position.set(xPos, baseY, baseZ);
-
-                // Start hidden until 3D mode
-                sphere.visible = false;
-                border.visible = false;
-
-                selectorSpheres.push(sphere);
-                selectorSpheres.push(border); // keep both so you can toggle visibility
-            }
-
-            // Ensure camera + children render
-            scene.add(camera);
-        }
-
-        let textureTextMesh;
-        const fontLoader2 = new THREE.FontLoader();
-        fontLoader2.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-            const textGeometry = new THREE.TextGeometry('Butter Milk', {
-                font: font,
-                size: 1,
-                height: 0.05,
-                curveSegments: 12,
-            });
-            const textMaterial = new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                map: textureOptions[0], // default texture
-                transparent: true,
-                opacity: 0.3, // adjust as needed
-            });
-
-            textureTextMesh = new THREE.Mesh(textGeometry, textMaterial);
-
-            // Position text behind the model
-            textureTextMesh.position.set(-3.5, 0.5, -8);
-            textureTextMesh.visible = false; // show only in 3D mode
-            camera.add(textureTextMesh);
-            scene.add(camera); // make sure camera+children render
-        });
 
         view3DBtn.addEventListener("click", () => {
             if (textureTextMesh) textureTextMesh.visible = true;
@@ -691,54 +729,7 @@
             if (textureTextMesh) textureTextMesh.visible = false;
         });
 
-        const textureNames = ["Butter Milk", "Sabja Lassi", "Nimbu Sabja", "Ragi ButterMilk"];
 
-        window.addEventListener("click", (event) => {
-            if (!in3DMode) return;
-
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(selectorSpheres);
-
-            if (intersects.length > 0 && model) {
-                const clickedSphere = intersects[0].object;
-                const chosenTexture = clickedSphere.material.map;
-                const index = selectorSpheres.indexOf(clickedSphere);
-
-                // apply texture
-                model.traverse(child => {
-                    if (child.isMesh) {
-                        child.material.map = chosenTexture;
-                        child.material.needsUpdate = true;
-                    }
-                });
-
-                if (textureTextMesh) {
-                    textureTextMesh.material.map = chosenTexture;
-                    textureTextMesh.material.color.set(0xffffff);
-                    textureTextMesh.material.transparent = true;
-                    textureTextMesh.material.opacity = 0.3; // semi-transparent
-                    textureTextMesh.material.needsUpdate = true;
-                }
-
-                if (textureTextMesh) {
-                    const fontLoader = new THREE.FontLoader();
-                    fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-                        const textGeometry = new THREE.TextGeometry(textureNames[Math.floor(index / 2)], {
-                            font: font,
-                            size: 1,
-                            height: 0.05,
-                        });
-
-                        textureTextMesh.geometry.dispose(); // cleanup
-                        textureTextMesh.geometry = textGeometry; // assign new geometry
-                        // material already updated with chosenTexture earlier
-                    });
-                }
-            }
-        });
         const playBtn = document.getElementById("playBtn");
         const audio = document.getElementById("myAudio");
 
