@@ -259,6 +259,8 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;400;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
+
 </head>
 
 <body>
@@ -663,7 +665,7 @@
                 const crystalTexture = textureLoader.load("textures/crystal.jpg");
                 const diamondNormal = textureLoader.load("textures/diamond_normal_map.jpg");
                 const envMap = new THREE.CubeTextureLoader()
-                    .setPath("textures/cube/") // folder path where your cubemap faces are stored
+                    .setPath("textures/diamond.hdr")
                     .load([
                         "px.jpg", "nx.jpg", 
                         "py.jpg", "ny.jpg", 
@@ -712,6 +714,8 @@
             document.getElementById("leftText3D").style.display = "block";
             document.getElementById("rightText3D").style.display = "block";
         });
+
+        
         exit3DBtn.addEventListener("click", () => {
             toggleSelectors(false);
             location.href = location.href;
