@@ -414,13 +414,25 @@
             alpha: true,
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
         document
             .getElementById("three-container")
             .appendChild(renderer.domElement);
         const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
         scene.add(ambientLight);
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
-        directionalLight.position.set(5, 5, 5);
+        directionalLight.position.set(10, 20, 10);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        directionalLight.shadow.camera.near = 2;
+        directionalLight.shadow.camera.far = 30;
+        directionalLight.shadow.camera.left = -50;
+        directionalLight.shadow.camera.right = 10;
+        directionalLight.shadow.camera.top = 20;
+        directionalLight.shadow.camera.bottom = -10;
         scene.add(directionalLight);
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
@@ -433,6 +445,14 @@
             textureLoader.load("textures/nimbu.png"),
             textureLoader.load("textures/lemon.png"),
         ];
+        const groundGeometry = new THREE.PlaneGeometry(200, 200);
+        const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -3; // adjust below your model
+        ground.receiveShadow = true;
+        scene.add(ground);
+
         const loader = new THREE.GLTFLoader();
         let model, posX, posY, posZ, scaleX, scaleY, scaleZ;
         loader.load("models/glibs.glb", function (gltf) {
@@ -440,6 +460,14 @@
             model.position.set(-54, -30, 0.5);
             model.scale.set(2, 2, 2);
             scene.add(model);
+
+            model.traverse(child => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+
             prevModelPosition = model.position.clone();
             prevModelScale = model.scale.clone();
             posX = gsap.quickTo(model.position, "x", {
@@ -493,6 +521,9 @@
         function animate() {
             requestAnimationFrame(animate);
             if (model && !in3DMode) model.rotation.y += 0.003;
+            if (in3DMode) {
+                directionalLight.position.copy(camera.position);
+            }
             controls.update();
             renderer.render(scene, camera);
         }
@@ -609,6 +640,7 @@
             else if (progress < split2) dots[1].classList.add("active");
             else dots[2].classList.add("active");
         }
+
         view3DBtn.addEventListener("click", () => {
             in3DMode = true;
             if (model) {
@@ -629,12 +661,29 @@
             document.body.style.overflow = "hidden";
             if (model) {
                 const crystalTexture = textureLoader.load("textures/crystal.jpg");
+                const diamondNormal = textureLoader.load("textures/diamond_normal_map.jpg");
+                const envMap = new THREE.CubeTextureLoader()
+                    .setPath("textures/cube/") // folder path where your cubemap faces are stored
+                    .load([
+                        "px.jpg", "nx.jpg", 
+                        "py.jpg", "ny.jpg", 
+                        "pz.jpg", "nz.jpg", 
+                    ]);
                 model.traverse((child) => {
                     if (child.isMesh) {
-                        child.material = new THREE.MeshStandardMaterial({
+                        child.material = new THREE.MeshPhysicalMaterial({
                             map: crystalTexture,
-                            roughness: 0.4,
-                            metalness: 0.2,
+                            normalMap: diamondNormal,
+                            normalScale: new THREE.Vector2(1, 1),
+                            envMap: envMap,
+                            envMapIntensity: 2.0, 
+                            roughness: 0.05, 
+                            metalness: 0.0,
+                            clearcoat: 1.0,
+                            clearcoatRoughness: 0.0,
+                            transmission: 1.0, 
+                            ior: 2.4,
+                            thickness: 1.0,
                         });
                         child.material.needsUpdate = true;
                     }
@@ -657,6 +706,7 @@
             camera.position.set(0, 2, 6);
             controls.target.set(0, -2, 0);
             controls.update();
+            directionalLight.position.copy(camera.position);
             if (textMesh) textMesh.visible = false;
             toggleSelectors(true);
             document.getElementById("leftText3D").style.display = "block";
@@ -788,6 +838,7 @@
                                 map: defaultTexture,
                                 roughness: 0.4,
                                 metalness: 0.2,
+
                             });
                         }
                     });
