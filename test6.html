@@ -255,12 +255,12 @@
             opacity: 0.5;
             pointer-events: none;
             z-index: 0;
+            transition: opacity 0.6s ease, background-image 0.6s ease;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;400;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
-
 </head>
 
 <body>
@@ -335,7 +335,6 @@
     </div>
     <button id="exit-3d">Exit 3D</button>
     <div id="bg-overlay"></div>
-
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -343,6 +342,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/TextGeometry.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
     <script>
+        const MODEL_SCALE_FACTOR = 16;
         const s1 = document.getElementById("text-section1");
         const s2 = document.getElementById("text-section2");
         const s3 = document.getElementById("text-section3");
@@ -418,13 +418,12 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
         document
             .getElementById("three-container")
             .appendChild(renderer.domElement);
         const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
         scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
+        const directionalLight = new THREE.DirectionalLight(0xacacac, 0.01);
         directionalLight.position.set(10, 20, 10);
         directionalLight.castShadow = true;
         directionalLight.shadow.mapSize.width = 2048;
@@ -442,36 +441,49 @@
         controls.enableZoom = false;
         controls.enableRotate = true;
         const textureLoader = new THREE.TextureLoader();
-        const textures = [
-            textureLoader.load("textures/crystal.jpg"),
-            textureLoader.load("textures/nimbu.png"),
-            textureLoader.load("textures/lemon.png"),
-        ];
         const groundGeometry = new THREE.PlaneGeometry(200, 200);
         const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
         const ground = new THREE.Mesh(groundGeometry, groundMaterial);
         ground.rotation.x = -Math.PI / 2;
-        ground.position.y = -3; // adjust below your model
+        ground.position.y = -3;
         ground.receiveShadow = true;
         scene.add(ground);
-
         const loader = new THREE.GLTFLoader();
         let model, posX, posY, posZ, scaleX, scaleY, scaleZ;
-        loader.load("models/glibs.glb", function (gltf) {
+        loader.load("models/butter_milk.glb", function (gltf) {
             model = gltf.scene;
             model.position.set(-54, -30, 0.5);
-            model.scale.set(2, 2, 2);
+            model.scale.set(
+                MODEL_SCALE_FACTOR,
+                MODEL_SCALE_FACTOR,
+                MODEL_SCALE_FACTOR
+            );
             scene.add(model);
 
-            model.traverse(child => {
+            model.traverse((child) => {
                 if (child.isMesh) {
                     child.castShadow = true;
                     child.receiveShadow = true;
+
+                    // Default bottle material (outside 3D mode)
+                    child.material = new THREE.MeshPhysicalMaterial({
+                        map: child.material.map || null, // keep original texture if exists
+                        transparent: true,
+                        opacity: 0.85, // <-- slightly transparent
+                        roughness: 0.2,
+                        metalness: 0.0,
+                        transmission: 0.6, // <-- glass-like effect
+                        thickness: 0.8,
+                        clearcoat: 0.6,
+                        clearcoatRoughness: 0.15
+                    });
+                    child.material.needsUpdate = true;
                 }
             });
 
             prevModelPosition = model.position.clone();
             prevModelScale = model.scale.clone();
+
             posX = gsap.quickTo(model.position, "x", {
                 duration: 0.3,
                 ease: "power2.out",
@@ -547,20 +559,7 @@
         function updateAnimations(progress) {
             const split1 = 0.33,
                 split2 = 0.66;
-            if (model) {
-                model.traverse((child) => {
-                    if (child.isMesh) {
-                        if (progress < split1) {
-                            child.material.map = textures[0];
-                        } else if (progress < split2) {
-                            child.material.map = textures[1];
-                        } else {
-                            child.material.map = textures[2];
-                        }
-                        child.material.needsUpdate = true;
-                    }
-                });
-            }
+
             if (model) {
                 if (progress < split1) {
                     let p1 = progress / split1;
@@ -570,9 +569,9 @@
                         posZ(1);
                     }
                     if (scaleX) {
-                        scaleX(6 - 1 * p1);
-                        scaleY(5 - 1 * p1);
-                        scaleZ(6 - 1 * p1);
+                        scaleX((6 - 1 * p1) * MODEL_SCALE_FACTOR);
+                        scaleY((5 - 1 * p1) * MODEL_SCALE_FACTOR);
+                        scaleZ((6 - 1 * p1) * MODEL_SCALE_FACTOR);
                     }
                 } else if (progress < split2) {
                     if (posX) {
@@ -581,9 +580,9 @@
                         posZ(0.5);
                     }
                     if (scaleX) {
-                        scaleX(2.5);
-                        scaleY(2.5);
-                        scaleZ(2.5);
+                        scaleX(2.5 * MODEL_SCALE_FACTOR);
+                        scaleY(2.5 * MODEL_SCALE_FACTOR);
+                        scaleZ(2.5 * MODEL_SCALE_FACTOR);
                     }
                 } else {
                     let p3 = (progress - split2) / (1 - split2);
@@ -593,9 +592,9 @@
                         posZ(0.5 + (-3 - 0.5) * p3);
                     }
                     if (scaleX) {
-                        scaleX(2.5 + (3.7 - 2.5) * p3);
-                        scaleY(2.5 + (3.7 - 2.5) * p3);
-                        scaleZ(2.5 + (3.7 - 2.5) * p3);
+                        scaleX((2.5 + (3.7 - 2.5) * p3) * MODEL_SCALE_FACTOR);
+                        scaleY((2.5 + (3.7 - 2.5) * p3) * MODEL_SCALE_FACTOR);
+                        scaleZ((2.5 + (3.7 - 2.5) * p3) * MODEL_SCALE_FACTOR);
                     }
                 }
             }
@@ -642,7 +641,12 @@
             else if (progress < split2) dots[1].classList.add("active");
             else dots[2].classList.add("active");
         }
-
+        const diamondNormalMap = new THREE.TextureLoader().load(
+            "textures/diamond_normal_map.jpg"
+        );
+        const crystalTexture = new THREE.TextureLoader().load(
+            "textures/crystal.jpg"
+        );
         view3DBtn.addEventListener("click", () => {
             in3DMode = true;
             if (model) {
@@ -662,30 +666,18 @@
             controls.enableRotate = true;
             document.body.style.overflow = "hidden";
             if (model) {
-                const crystalTexture = textureLoader.load("textures/crystal.jpg");
-                const diamondNormal = textureLoader.load("textures/diamond_normal_map.jpg");
-                const envMap = new THREE.CubeTextureLoader()
-                    .setPath("textures/diamond.hdr")
-                    .load([
-                        "px.jpg", "nx.jpg", 
-                        "py.jpg", "ny.jpg", 
-                        "pz.jpg", "nz.jpg", 
-                    ]);
                 model.traverse((child) => {
                     if (child.isMesh) {
                         child.material = new THREE.MeshPhysicalMaterial({
                             map: crystalTexture,
-                            normalMap: diamondNormal,
-                            normalScale: new THREE.Vector2(1, 1),
-                            envMap: envMap,
-                            envMapIntensity: 2.0, 
-                            roughness: 0.05, 
-                            metalness: 0.0,
+                            normalMap: diamondNormalMap,
+                            roughness: 0.3,
+                            metalness: 0.6,
+                            transmission: 0.7,
+                            transparent: true,
+                            opacity: 1.0,
                             clearcoat: 1.0,
-                            clearcoatRoughness: 0.0,
-                            transmission: 1.0, 
-                            ior: 2.4,
-                            thickness: 1.0,
+                            clearcoatRoughness: 0.1,
                         });
                         child.material.needsUpdate = true;
                     }
@@ -698,9 +690,9 @@
                     ease: "power2.out",
                 });
                 gsap.to(model.scale, {
-                    x: 1.5,
-                    y: 1.5,
-                    z: 1.5,
+                    x: 1.5 * MODEL_SCALE_FACTOR,
+                    y: 1.5 * MODEL_SCALE_FACTOR,
+                    z: 1.5 * MODEL_SCALE_FACTOR,
                     duration: 0.45,
                     ease: "power2.out",
                 });
@@ -714,14 +706,27 @@
             document.getElementById("leftText3D").style.display = "block";
             document.getElementById("rightText3D").style.display = "block";
         });
-
-        
         exit3DBtn.addEventListener("click", () => {
+            in3DMode = false;
             toggleSelectors(false);
-            location.href = location.href;
+            s1.style.display = "block";
+            s2.style.display = "block";
+            s3.style.display = "block";
+            document.getElementById("nav-dots").style.display = "flex";
+            exit3DBtn.style.display = "none";
             document.getElementById("leftText3D").style.display = "none";
             document.getElementById("rightText3D").style.display = "none";
+            document.getElementById("bg-overlay").style.backgroundImage = "";
+            controls.enablePan = false;
+            controls.enableZoom = false;
+            controls.enableRotate = true;
+            document.body.style.overflow = "auto";
+            if (textMesh) textMesh.visible = true;
+            // Force reload without cache
+            location.href = location.href;
+
         });
+
         window.addEventListener("resize", () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -834,25 +839,17 @@
                 const index = textureOptions.findIndex(
                     (tex) => tex === chosenTexture
                 );
-                const defaultTexture = textureLoader.load("textures/crystal.jpg");
-                if (model) {
-                    model.traverse((child) => {
-                        if (child.isMesh) {
-                            child.material = new THREE.MeshStandardMaterial({
-                                map: defaultTexture,
-                                roughness: 0.4,
-                                metalness: 0.2,
 
-                            });
-                        }
-                    });
-                }
                 if (chosenTexture && chosenTexture.image) {
                     const bgUrl = chosenTexture.image.currentSrc || chosenTexture.image.src;
                     const overlay = document.getElementById("bg-overlay");
-                    overlay.style.backgroundImage = `url(${bgUrl})`;
-                    overlay.style.opacity = "0.5";
+                    overlay.style.opacity = 0;
+                    setTimeout(() => {
+                        overlay.style.backgroundImage = `url(${bgUrl})`;
+                        overlay.style.opacity = 0.5;
+                    }, 200);
                 }
+
                 if (index >= 0 && textureInfo[index]) {
                     document
                         .getElementById("leftText3D")

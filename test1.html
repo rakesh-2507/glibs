@@ -1,157 +1,889 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Glibs</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html {
+        :root {
+            --bg-color: radial-gradient(circle,
+                    #ebd7d7 0%,
+                    #f5b5b0 70%,
+                    #eab7b1 100%);
+            --text-color: #2c1a1a;
+            --brand-color: #52322b;
+            --menu-color: #52322b;
+            --dot-color: rgba(255, 255, 255, 0.8);
+            --dot-active-color: #2c1a1a;
+            --btn-border: #2c1a1a;
+            --btn-hover-bg: rgba(44, 26, 26, 0.1);
+        }
+
+        :root {
+            --bg-color-section1: radial-gradient(circle,
+                    #ebd7d7 0%,
+                    #f5b5b0 70%,
+                    #eab7b1 100%);
+            --bg-color-section2: radial-gradient(circle,
+                    #d6e4f0 0%,
+                    #9abbd9 70%,
+                    #7a9cc6 100%);
+            --bg-color-section3: radial-gradient(circle,
+                    #f7e8d5 0%,
+                    #f1c27d 70%,
+                    #e8a45c 100%);
+            --bg-color: var(--bg-color-section1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 300vh;
+            font-family: "Times New Roman", serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            transition: background 0.5s, color 0.5s;
+        }
+
+        section {
+            scroll-snap-align: start;
+        }
+
+        #three-container {
             width: 100%;
             height: 100%;
-            font-family: 'Times New Roman', serif;
-            background: linear-gradient(90deg, #f5b5b0, #eab7b1);
-            display: flex;
-            overflow: hidden;
-            color: #2c1a1a;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
         }
-        #three-container { width: 50%; height: 100%; }
-        #text-section {
-            width: 50%;
+
+        #text-section1,
+        #text-section2,
+        #text-section3 {
+            transition: transform 0.6s ease, opacity 0.1s ease, color 0.5s;
+        }
+
+        #text-section1 {
+            position: fixed;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 60px;
-            opacity: 0;
-            transform: translateY(30px);
+            padding: 15% 15% 0 0;
+            align-items: flex-end;
+            transform: translateX(0);
+            opacity: 1;
+            font-family: "Playfair Display SC", serif;
         }
-        h1 { font-size: 5rem; font-weight: 600; line-height: 1; margin-bottom: 20px; }
-        p { font-size: 1rem; line-height: 1.5; margin-bottom: 30px; max-width: 450px; }
-        .btn {
-            border: 1px solid #2c1a1a;
+
+        #text-section2 {
+            position: fixed;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 15% 0 0 20%;
+            align-items: flex-start;
+            transform: translateX(-10%);
+            opacity: 0;
+        }
+
+        #text-section3 {
+            position: fixed;
+            display: flex;
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            text-align: center;
+            color: var(--text-color);
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        h2.glibs-bg {
+            font-weight: 400;
+            font-family: math;
+            font-size: 10.3125rem;
+            line-height: 100%;
+            letter-spacing: -0.04em;
+            color: #cb6b56;
+            opacity: 0.1;
+            position: absolute;
+            top: 36%;
+            left: 10%;
+            transform: translateY(-70%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            max-width: 450px;
+        }
+
+        .btn,
+        .view {
+            border: 1px solid var(--btn-border);
             padding: 12px 25px;
             border-radius: 30px;
             font-size: 1rem;
             cursor: pointer;
             background: transparent;
-            transition: 0.3s;
+            transition: 0.3s, color 0.5s, border-color 0.5s;
+            color: var(--text-color);
         }
-        .btn:hover { background: rgba(44, 26, 26, 0.1); }
-        header {
-            position: absolute;
-            top: 20px;
-            left: 40px;
-            right: 40px;
+
+        .btn:hover,
+        .view:hover {
+            background: var(--btn-hover-bg);
+        }
+
+        .custom-header {
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #3d2b2b;
-            font-size: 14px;
-            font-weight: 500;
+            padding: 53px 180px;
+            pointer-events: all;
+            position: absolute;
             z-index: 5;
+            transition: color 0.5s;
+        }
+
+        .brand {
+            font-size: 2.5625rem;
+            color: var(--brand-color);
+        }
+
+        .brand span {
+            font-weight: 200;
+            margin-left: 5px;
+            font-size: 15px;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 79px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: var(--menu-color);
+            font-weight: 500;
+            transition: color 0.5s;
+        }
+
+        .icon {
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--menu-color);
+            transition: color 0.5s;
+        }
+
+        #nav-dots {
+            position: fixed;
+            top: 50%;
+            right: 10%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: var(--dot-color);
+            border-radius: 50%;
+            transition: background 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: var(--dot-active-color);
+            transform: scale(1.3);
+        }
+
+        #exit-3d {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 30px;
+            border: 1px solid var(--btn-border);
+            background: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            display: none;
+            z-index: 10000;
+        }
+
+        #bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-repeat: space;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
+
 </head>
+
 <body>
-    <header>
-        <div>MANCINI & CO <span style="font-weight: 300;">BY NEOTIX</span></div>
-        <div>Know more &nbsp; | &nbsp; 🔊 &nbsp; | &nbsp; 🌙</div>
+    <header class="custom-header">
+        <div class="brand">GLIBS <span>BY Lorem</span></div>
+        <nav class="menu">
+            <a href="/index.html" target="_blank">Know more</a>
+            <audio id="myAudio" src="/music_loop.mp3"></audio>
+            <span id="playBtn" class="icon">
+                <i class="fa fa-play" aria-hidden="true"></i>
+            </span>
+            <span class="icon" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></span>
+        </nav>
     </header>
-
     <div id="three-container"></div>
-    <div id="text-section">
-        <h1>UNIQUE<br>JEWELRY</h1>
-        <p>Customize your unique ring with graphic angles and pure lines that combine to create the pure beauty of the collection.</p>
-        <button class="btn">Start now ↓</button>
+    <div id="text-section1">
+        <h1>Natural Wellness,<br />Bottled Fresh</h1>
+        <p>
+            From ginger shots to ragi buttermilk – drink better, live better with
+            GLYBS.
+        </p>
+        <button class="btn">Scroll ↓</button>
     </div>
+    <div id="text-section2">
+        <h2 class="glibs-bg">Who We Are</h2>
+        <h1>About Us</h1>
+        <p>
+            At *GLYBS Drinks*, we believe that nature holds the key to health and
+            vitality. That’s why we craft our beverages using traditional Indian
+            ingredients like ginger, turmeric, neem, ragi, and sabja – combining
+            ancient wisdom with modern convenience.
+        </p>
+        <p>
+            Founded with a mission to provide *clean, tasty, and functional drinks,
+            we produce a range of **buttermilks, lassis, herbal shots, and
+            refreshing coolers* that support digestion, immunity, and hydration.
+        </p>
+    </div>
+    <div id="text-section3">
+        <h1>What We Stand For</h1>
+        <p>* 🌿 *Natural Ingredients* – No artificial preservatives or colors.</p>
+        <p>* ❄ *Cold-Chained Freshness* – Store below 5°C to retain freshness.</p>
+        <p>* 💪 *Wellness First* – Every sip is designed to benefit your body.</p>
+        <button class="view">View Products</button>
+    </div>
+    <!-- 3D Mode Text Overlays -->
+    <div id="leftText3D" style="
+        position: fixed;
+        top: 5%;
+        left: 10%;
+        z-index: 99999;
+        max-width: 600px;
+        display: none;
+      ">
+        <h1>Pick a Beverage</h1>
+    </div>
+    <div id="rightText3D" style="
+        position: fixed;
+        top: 30%;
+        right: 10%;
+        z-index: 99999;
+        max-width: 400px;
+        text-align: right;
+        display: none;
+        text-align: justify;
+      ">
+        <p style="font-size: 35px">To make the GLIBS as your fav...</p>
+    </div>
+    <div id="nav-dots">
+        <span class="dot active"></span> <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+    <button id="exit-3d">Exit 3D</button>
+    <div id="bg-overlay"></div>
 
-    <!-- Three.js & GSAP -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/TextGeometry.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
-
     <script>
-        // ---- THREE.JS SETUP ----
+        const s1 = document.getElementById("text-section1");
+        const s2 = document.getElementById("text-section2");
+        const s3 = document.getElementById("text-section3");
+        const dots = document.querySelectorAll(".dot");
+        const view3DBtn = document.querySelector(".view");
+        const exit3DBtn = document.getElementById("exit-3d");
+        const darkModeToggle = document.getElementById("dark-mode-toggle");
+        let in3DMode = false;
+        let darkMode = false;
+        let prevModelPosition = null;
+        let prevModelScale = null;
+        darkModeToggle.addEventListener("click", () => {
+            darkMode = !darkMode;
+            if (darkMode) {
+                document.documentElement.style.setProperty("--bg-color", "#490042");
+                document.documentElement.style.setProperty("--text-color", "#ffffff");
+                document.documentElement.style.setProperty(
+                    "--brand-color",
+                    "#ffffff"
+                );
+                document.documentElement.style.setProperty("--menu-color", "#ffffff");
+                document.documentElement.style.setProperty(
+                    "--dot-color",
+                    "rgba(255,255,255,0.4)"
+                );
+                document.documentElement.style.setProperty(
+                    "--dot-active-color",
+                    "#ffffff"
+                );
+                document.documentElement.style.setProperty("--btn-border", "#ffffff");
+                document.documentElement.style.setProperty(
+                    "--btn-hover-bg",
+                    "rgba(255,255,255,0.1)"
+                );
+            } else {
+                document.documentElement.style.setProperty(
+                    "--bg-color",
+                    "var(--bg-color-section1)"
+                );
+                document.documentElement.style.setProperty("--text-color", "#2c1a1a");
+                document.documentElement.style.setProperty(
+                    "--brand-color",
+                    "#52322B"
+                );
+                document.documentElement.style.setProperty("--menu-color", "#52322B");
+                document.documentElement.style.setProperty(
+                    "--dot-color",
+                    "rgba(255, 255, 255, 0.8)"
+                );
+                document.documentElement.style.setProperty(
+                    "--dot-active-color",
+                    "#2c1a1a"
+                );
+                document.documentElement.style.setProperty("--btn-border", "#2c1a1a");
+                document.documentElement.style.setProperty(
+                    "--btn-hover-bg",
+                    "rgba(44,26,26,0.1)"
+                );
+            }
+        });
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(40, (window.innerWidth / 2) / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(
+            40,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
         camera.position.set(10, 5, 10);
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth / 2, window.innerHeight);
-        document.getElementById("three-container").appendChild(renderer.domElement);
-
-        // Lighting
+        document
+            .getElementById("three-container")
+            .appendChild(renderer.domElement);
         const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
         scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 5, 5);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
+        directionalLight.position.set(10, 20, 10);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        directionalLight.shadow.camera.near = 2;
+        directionalLight.shadow.camera.far = 30;
+        directionalLight.shadow.camera.left = -50;
+        directionalLight.shadow.camera.right = 10;
+        directionalLight.shadow.camera.top = 20;
+        directionalLight.shadow.camera.bottom = -10;
         scene.add(directionalLight);
 
-        // Orbit Controls
+        let envMap = null; // declare globally
+
+        // 🌟 HDR Environment Setup
+        const rgbeLoader = new THREE.RGBELoader();
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+        pmremGenerator.compileEquirectangularShader();
+
+        rgbeLoader.load("textures/", (hdrEquirect) => {
+            envMap = pmremGenerator.fromEquirectangular(hdrEquirect).texture;
+            scene.environment = envMap;
+            scene.background = envMap; // optional
+
+            hdrEquirect.dispose();
+            pmremGenerator.dispose();
+
+            if (model) {
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material.envMap = envMap;
+                        child.material.envMapIntensity = 2.0;
+                        child.material.needsUpdate = true;
+                    }
+                });
+            }
+        });
+
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.enablePan = false;
-        controls.minDistance = 2;
-        controls.maxDistance = 5;
+        controls.enableZoom = false;
+        controls.enableRotate = true;
+        const textureLoader = new THREE.TextureLoader();
+        const textures = [
+            textureLoader.load("textures/crystal.jpg"),
+            textureLoader.load("textures/nimbu.png"),
+            textureLoader.load("textures/lemon.png"),
+        ];
+        const groundGeometry = new THREE.PlaneGeometry(200, 200);
+        const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -3; // adjust below your model
+        ground.receiveShadow = true;
+        scene.add(ground);
 
-        // Load Model and log part names
         const loader = new THREE.GLTFLoader();
-        let model;
+        let model, posX, posY, posZ, scaleX, scaleY, scaleZ;
         loader.load("models/glibs.glb", function (gltf) {
             model = gltf.scene;
-            model.position.set(-7, -5, 0);
+            model.position.set(-54, -30, 0.5);
+            model.scale.set(2, 2, 2);
             scene.add(model);
 
-            // --- Log mesh part names to console ---
-            model.traverse((child) => {
+            model.traverse(child => {
                 if (child.isMesh) {
-                    console.log("Mesh Part Name:", child.name);
+                    child.castShadow = true;
+                    child.receiveShadow = true;
                 }
             });
 
-            // Animate to final position
-            gsap.to(model.position, {
-                x: 0, y: -1,
-                duration: 2,
-                ease: "power3.out",
-                delay: 0.3
+            prevModelPosition = model.position.clone();
+            prevModelScale = model.scale.clone();
+            posX = gsap.quickTo(model.position, "x", {
+                duration: 0.3,
+                ease: "power2.out",
             });
-
-            gsap.fromTo(model.rotation,
-                { y: -1 },
-                { y: 0, duration: 2, ease: "power3.out", delay: 0.3 }
-            );
-        }, undefined, function (error) {
-            console.error(error);
+            posY = gsap.quickTo(model.position, "y", {
+                duration: 0.3,
+                ease: "power2.out",
+            });
+            posZ = gsap.quickTo(model.position, "z", {
+                duration: 0.3,
+                ease: "power2.out",
+            });
+            scaleX = gsap.quickTo(model.scale, "x", {
+                duration: 0.3,
+                ease: "power2.out",
+            });
+            scaleY = gsap.quickTo(model.scale, "y", {
+                duration: 0.3,
+                ease: "power2.out",
+            });
+            scaleZ = gsap.quickTo(model.scale, "z", {
+                duration: 0.3,
+                ease: "power2.out",
+            });
         });
-
-        // Animation Loop
+        let textMesh;
+        const fontLoader = new THREE.FontLoader();
+        fontLoader.load(
+            "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json",
+            function (font) {
+                const textGeometry = new THREE.TextGeometry("Gl bs", {
+                    font: font,
+                    size: 7.5,
+                    height: 0.2,
+                    curveSegments: 18,
+                    bevelEnabled: false,
+                });
+                const textMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xcb6b56,
+                    transparent: true,
+                    opacity: 0,
+                });
+                textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(-15, -5, 2);
+                textMesh.rotation.y = Math.PI * 0.29;
+                scene.add(textMesh);
+            }
+        );
         function animate() {
             requestAnimationFrame(animate);
-            if (model) model.rotation.y += 0.003;
+            if (model && !in3DMode) model.rotation.y += 0.003;
+            if (in3DMode) {
+                directionalLight.position.copy(camera.position);
+            }
             controls.update();
             renderer.render(scene, camera);
         }
         animate();
+        let scrollProgress = 0,
+            targetProgress = 0;
+        window.addEventListener("scroll", () => {
+            if (!in3DMode) {
+                targetProgress =
+                    window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            }
+        });
+        gsap.ticker.add(() => {
+            if (!in3DMode) {
+                scrollProgress += (targetProgress - scrollProgress) * 0.06;
+                updateAnimations(scrollProgress);
+            }
+        });
+        function updateAnimations(progress) {
+            const split1 = 0.33,
+                split2 = 0.66;
+            if (model) {
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        if (progress < split1) {
+                            child.material.map = textures[0];
+                        } else if (progress < split2) {
+                            child.material.map = textures[1];
+                        } else {
+                            child.material.map = textures[2];
+                        }
+                        child.material.needsUpdate = true;
+                    }
+                });
+            }
+            if (model) {
+                if (progress < split1) {
+                    let p1 = progress / split1;
+                    if (posX) {
+                        posX(-8 + 5 * p1);
+                        posY(-7 + 2 * p1);
+                        posZ(1);
+                    }
+                    if (scaleX) {
+                        scaleX(6 - 1 * p1);
+                        scaleY(5 - 1 * p1);
+                        scaleZ(6 - 1 * p1);
+                    }
+                } else if (progress < split2) {
+                    if (posX) {
+                        posX(5.5);
+                        posY(-0.9);
+                        posZ(0.5);
+                    }
+                    if (scaleX) {
+                        scaleX(2.5);
+                        scaleY(2.5);
+                        scaleZ(2.5);
+                    }
+                } else {
+                    let p3 = (progress - split2) / (1 - split2);
+                    if (posX) {
+                        posX(5.5 + (-3 - 5.5) * p3);
+                        posY(-0.9 + (-3 + 0.9) * p3);
+                        posZ(0.5 + (-3 - 0.5) * p3);
+                    }
+                    if (scaleX) {
+                        scaleX(2.5 + (3.7 - 2.5) * p3);
+                        scaleY(2.5 + (3.7 - 2.5) * p3);
+                        scaleZ(2.5 + (3.7 - 2.5) * p3);
+                    }
+                }
+            }
+            function showSection(section, opacity, translateX = 0) {
+                section.style.opacity = opacity;
+                section.style.transform = `translateX(${translateX}%)`;
+            }
+            if (progress < split1) {
+                let p = progress / split1;
+                showSection(s1, 1 - p, 0);
+                showSection(s2, 0, -50);
+                s3.style.opacity = 0;
+                if (!darkMode)
+                    document.documentElement.style.setProperty(
+                        "--bg-color",
+                        "var(--bg-color-section1)"
+                    );
+                if (textMesh) textMesh.material.opacity = 0;
+            } else if (progress < split2) {
+                let p = (progress - split1) / (split2 - split1);
+                showSection(s1, 0, 50);
+                showSection(s2, 1 - p, 0);
+                s3.style.opacity = 0;
+                if (!darkMode)
+                    document.documentElement.style.setProperty(
+                        "--bg-color",
+                        "var(--bg-color-section2)"
+                    );
+                if (textMesh) textMesh.material.opacity = 0;
+            } else {
+                let p = (progress - split2) / (1 - split2);
+                showSection(s1, 0, 50);
+                showSection(s2, 0, -50);
+                s3.style.opacity = p;
+                if (!darkMode)
+                    document.documentElement.style.setProperty(
+                        "--bg-color",
+                        "var(--bg-color-section3)"
+                    );
+                if (textMesh) textMesh.material.opacity = p * 0.1;
+            }
+            dots.forEach((dot) => dot.classList.remove("active"));
+            if (progress < split1) dots[0].classList.add("active");
+            else if (progress < split2) dots[1].classList.add("active");
+            else dots[2].classList.add("active");
+        }
 
-        // Resize Event
-        window.addEventListener("resize", () => {
-            renderer.setSize(window.innerWidth / 2, window.innerHeight);
-            camera.aspect = (window.innerWidth / 2) / window.innerHeight;
-            camera.updateProjectionMatrix();
+        view3DBtn.addEventListener("click", () => {
+            in3DMode = true;
+            if (model) {
+                prevModelPosition = model.position.clone();
+                prevModelScale = model.scale.clone();
+            }
+            s1.style.display = "none";
+            s2.style.display = "none";
+            s3.style.display = "none";
+            document.getElementById("nav-dots").style.display = "none";
+            exit3DBtn.style.display = "block";
+            const threeContainer = document.getElementById("three-container");
+            threeContainer.style.pointerEvents = "all";
+            threeContainer.style.zIndex = 9999;
+            controls.enablePan = true;
+            controls.enableZoom = true;
+            controls.enableRotate = true;
+            document.body.style.overflow = "hidden";
+            if (model) {
+                const crystalTexture = textureLoader.load("textures/crystal.jpg");
+                const diamondNormal = textureLoader.load("textures/diamond_normal_map.jpg");
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material = new THREE.MeshPhysicalMaterial({
+                            map: crystalTexture,
+                            normalMap: diamondNormal,
+                            normalScale: new THREE.Vector2(1, 1),
+                            envMap: envMap || null,  // ✅ safe reference
+                            envMapIntensity: 2.0,
+                            roughness: 0.05,
+                            metalness: 0.0,
+                            clearcoat: 1.0,
+                            clearcoatRoughness: 0.0,
+                            transmission: 1.0,
+                            ior: 2.4,
+                            thickness: 1.0,
+                        });
+                        child.material.needsUpdate = true;
+                    }
+                });
+                gsap.to(model.position, {
+                    x: 0,
+                    y: -3,
+                    z: 0,
+                    duration: 0.45,
+                    ease: "power2.out",
+                });
+                gsap.to(model.scale, {
+                    x: 1.5,
+                    y: 1.5,
+                    z: 1.5,
+                    duration: 0.45,
+                    ease: "power2.out",
+                });
+            }
+            camera.position.set(0, 2, 6);
+            controls.target.set(0, -2, 0);
+            controls.update();
+            directionalLight.position.copy(camera.position);
+            if (textMesh) textMesh.visible = false;
+            toggleSelectors(true);
+            document.getElementById("leftText3D").style.display = "block";
+            document.getElementById("rightText3D").style.display = "block";
         });
 
-        // ---- GSAP FADE-IN TEXT ----
-        gsap.to("#text-section", {
-            duration: 1.5,
-            opacity: 1,
-            y: 0,
-            ease: "power2.out",
-            delay: 0.5
+
+        exit3DBtn.addEventListener("click", () => {
+            toggleSelectors(false);
+            location.href = location.href;
+            document.getElementById("leftText3D").style.display = "none";
+            document.getElementById("rightText3D").style.display = "none";
+        });
+        window.addEventListener("resize", () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+        const textureOptions = [
+            textureLoader.load("images/nimbu_sabja.jpg"),
+            textureLoader.load("images/spiced_Butter_milk.jpg"),
+            textureLoader.load("images/jeera_butter_milk.jpg"),
+            textureLoader.load("images/sabja_lassi.jpg"),
+            textureLoader.load("images/ragi_butter_milk.jpg"),
+            textureLoader.load("images/garlic_shots.jpg"),
+            textureLoader.load("images/turmeric_shots.jpg"),
+            textureLoader.load("images/ginger_turmeric_shots.jpg"),
+            textureLoader.load("images/amla_shots.jpg"),
+            textureLoader.load("images/neem_shoots.jpg"),
+            textureLoader.load("images/garlic_shots.jpg"),
+        ];
+        const textureInfo = [
+            {
+                title: "🍋 NIMBU SABJA",
+                desc: "Refreshing lemon drink with sabja seeds, offering instant cooling, natural hydration, and a zesty twist to your day.",
+            },
+            {
+                title: "🥛 SPICED BUTTERMILK",
+                desc: "Authentic masala chaas blended with ginger, chili, and curry leaves to cool your system and support digestion.",
+            },
+            {
+                title: "🧂 JEERA BUTTERMILK",
+                desc: "Traditional buttermilk infused with roasted jeera, ginger, and herbs – soothing, digestive, and naturally refreshing.",
+            },
+            {
+                title: "🥤 SABJA LASSI",
+                desc: "Sweet, creamy lassi enriched with sabja seeds – a perfect cooling treat that balances taste and digestion.",
+            },
+            {
+                title: "🌾 RAGI BUTTERMILK",
+                desc: "Wholesome fusion of ragi and chaas, rich in calcium, cooling the body while boosting gut health.",
+            },
+            {
+                title: "🫚 GINGER SHOT",
+                desc: "Strong, fiery ginger shot blended with honey – boosts immunity, aids digestion, and keeps colds away naturally.",
+            },
+            {
+                title: "🟡 TURMERIC SHOT",
+                desc: "Golden turmeric shot with honey, rich in curcumin – supports skin glow, joint strength, and inflammation relief.",
+            },
+            {
+                title: "🟠 GINGER TURMERIC SHOT",
+                desc: "A powerful blend of fresh ginger and turmeric, boosting immunity, digestion, and overall wellness with natural goodness.",
+            },
+            {
+                title: "🍏 AMLA SHOT",
+                desc: "Vitamin C-rich amla shot with honey – strengthens immunity, aids detox, and helps slow down aging naturally.",
+            },
+            {
+                title: "🌿 NEEM SHOT",
+                desc: "Bitter yet powerful neem shot with ginger and honey – detoxifies, purifies skin, and boosts overall immunity.",
+            },
+            {
+                title: "🧄 GARLIC SHOT",
+                desc: "Pungent garlic shot with ginger and honey – supports heart health, boosts immunity, and strengthens natural defenses.",
+            },
+        ];
+        let selectorSpheres = [];
+        let raycaster = new THREE.Raycaster();
+        let mouse = new THREE.Vector2();
+        function createTextureSelectors() {
+            const sphereGeo = new THREE.SphereGeometry(0.12, 20, 20);
+            const baseY = -1.5;
+            const baseZ = -6;
+            const spacing = 0.5;
+            const totalWidth = (textureOptions.length - 1) * spacing;
+            for (let i = 0; i < textureOptions.length; i++) {
+                const sphereMat = new THREE.MeshBasicMaterial({
+                    map: textureOptions[i],
+                });
+                const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+                const borderGeo = new THREE.SphereGeometry(0.14, 20, 20);
+                const borderMat = new THREE.MeshBasicMaterial({
+                    color: 0xacacac,
+                    side: THREE.BackSide,
+                });
+                const border = new THREE.Mesh(borderGeo, borderMat);
+                const xPos = -totalWidth / 2 + i * spacing;
+                border.position.set(xPos, baseY, baseZ);
+                sphere.position.set(xPos, baseY, baseZ);
+                camera.add(border);
+                camera.add(sphere);
+                sphere.visible = false;
+                border.visible = false;
+                selectorSpheres.push(sphere);
+                selectorSpheres.push(border);
+            }
+            scene.add(camera);
+        }
+        createTextureSelectors();
+        function toggleSelectors(show) {
+            selectorSpheres.forEach((s) => (s.visible = show));
+        }
+        window.addEventListener("click", (event) => {
+            if (!in3DMode) return;
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(selectorSpheres);
+            if (intersects.length > 0) {
+                const clickedSphere = intersects[0].object;
+                const chosenTexture = clickedSphere.material.map;
+                const index = textureOptions.findIndex(
+                    (tex) => tex === chosenTexture
+                );
+                const defaultTexture = textureLoader.load("textures/crystal.jpg");
+                if (model) {
+                    model.traverse((child) => {
+                        if (child.isMesh) {
+                            child.material = new THREE.MeshStandardMaterial({
+                                map: defaultTexture,
+                                roughness: 0.4,
+                                metalness: 0.2,
+
+                            });
+                        }
+                    });
+                }
+                if (chosenTexture && chosenTexture.image) {
+                    const bgUrl = chosenTexture.image.currentSrc || chosenTexture.image.src;
+                    const overlay = document.getElementById("bg-overlay");
+                    overlay.style.backgroundImage = `url(${bgUrl})`;
+                    overlay.style.opacity = "0.5";
+                }
+                if (index >= 0 && textureInfo[index]) {
+                    document
+                        .getElementById("leftText3D")
+                        .querySelector("h1").textContent = textureInfo[index].title;
+                    document
+                        .getElementById("rightText3D")
+                        .querySelector("p").textContent = textureInfo[index].desc;
+                }
+            }
         });
     </script>
 </body>
+
 </html>
