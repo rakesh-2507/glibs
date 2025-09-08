@@ -425,16 +425,14 @@
 
 
         // Top (weaker light hitting upper 20%)
-        const topLight = new THREE.DirectionalLight(0xffffff, 0.01);
-        topLight.position.set(0, 8, 10); // angled from above
+        const topLight = new THREE.DirectionalLight(0xffffff, 1);
+        topLight.position.set(0, -2, 10); // moved to right side
         scene.add(topLight);
 
         // Bottom (stronger light for 80%)
-        const bottomLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        bottomLight.position.set(0, -5, 10); // angled upward
+        const bottomLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        bottomLight.position.set(15, 5, 5); // moved to right side
         scene.add(bottomLight);
-
-
 
         const ambient = new THREE.AmbientLight(0xffffff, 0.1);
         scene.add(ambient);
