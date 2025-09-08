@@ -578,19 +578,20 @@
                 if (progress < split1) {
                     let p1 = progress / split1;
                     if (posX) {
-                        posX(-7 + 5 * p1);
-                        posY(-7 + 2 * p1);
+                        posX(-5 + 5 * p1);
+                        posY(-5 + 2 * p1);
                         posZ(1);
                     }
                     if (scaleX) {
-                        scaleX((4.5 - 1 * p1) * MODEL_SCALE_FACTOR);
-                        scaleY((5.1 - 1 * p1) * MODEL_SCALE_FACTOR);
-                        scaleZ((6 - 1 * p1) * MODEL_SCALE_FACTOR);
+                        let uniformScale = (4.0 - 1.2 * p1) * MODEL_SCALE_FACTOR;
+                        scaleX(uniformScale);
+                        scaleY(uniformScale);
+                        scaleZ(uniformScale);
                     }
-                    model.rotation.set(-0.15,0, 0);
 
-
-                } else if (progress < split2) {
+                    model.rotation.set(-0.15, 0, 0);
+                }
+                else if (progress < split2) {
                     if (posX) {
                         posX(5.5);
                         posY(-0.9);
@@ -603,7 +604,7 @@
                     }
 
                     // ✅ Keep upright
-                    model.rotation.set(0.2,-0.5, 0);
+                    model.rotation.set(0.2, -0.5, 0);
 
                 } else {
                     let p3 = (progress - split2) / (1 - split2);
