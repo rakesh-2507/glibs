@@ -260,7 +260,6 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;400;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
 </head>
 
 <body>
@@ -341,6 +340,8 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/TextGeometry.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fflate@0.7.4/umd/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/EXRLoader.js"></script>
     <script>
         const MODEL_SCALE_FACTOR = 16;
         const s1 = document.getElementById("text-section1");
@@ -421,20 +422,20 @@
         document
             .getElementById("three-container")
             .appendChild(renderer.domElement);
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
-        scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xacacac, 0.01);
-        directionalLight.position.set(10, 20, 10);
-        directionalLight.castShadow = true;
-        directionalLight.shadow.mapSize.width = 2048;
-        directionalLight.shadow.mapSize.height = 2048;
-        directionalLight.shadow.camera.near = 2;
-        directionalLight.shadow.camera.far = 30;
-        directionalLight.shadow.camera.left = -50;
-        directionalLight.shadow.camera.right = 10;
-        directionalLight.shadow.camera.top = 20;
-        directionalLight.shadow.camera.bottom = -10;
-        scene.add(directionalLight);
+
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        dirLight.position.set(5, 1, 5);
+        scene.add(dirLight);
+
+        const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        fillLight.position.set(-5, 5, -5);
+        scene.add(fillLight);
+
+        const ambient = new THREE.AmbientLight(0xffffff, 0.2);
+        scene.add(ambient);
+
+
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.enablePan = false;
@@ -448,6 +449,21 @@
         ground.position.y = -3;
         ground.receiveShadow = true;
         scene.add(ground);
+
+        const exrLoader = new THREE.EXRLoader();
+        exrLoader.load('spiced_butter milk.exr', (texture) => {
+            texture.mapping = THREE.EquirectangularReflectionMapping;
+
+            const pmremGenerator = new THREE.PMREMGenerator(renderer);
+            pmremGenerator.compileEquirectangularShader();
+
+            const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+            scene.environment = envMap;
+
+            texture.dispose();
+            pmremGenerator.dispose();
+        });
+
         const loader = new THREE.GLTFLoader();
         let model, posX, posY, posZ, scaleX, scaleY, scaleZ;
         loader.load("models/butter_milk.glb", function (gltf) {
@@ -465,17 +481,18 @@
                     child.castShadow = true;
                     child.receiveShadow = true;
 
-                    // Default bottle material (outside 3D mode)
                     child.material = new THREE.MeshPhysicalMaterial({
-                        map: child.material.map || null, // keep original texture if exists
+                        map: child.material.map || null,
                         transparent: true,
-                        opacity: 0.85, // <-- slightly transparent
-                        roughness: 0.2,
-                        metalness: 0.0,
-                        transmission: 0.6, // <-- glass-like effect
-                        thickness: 0.8,
-                        clearcoat: 0.6,
-                        clearcoatRoughness: 0.15
+                        opacity: 0.95,
+                        roughness: 0.05,
+                        metalness: 0.1,
+                        transmission: 0.9,
+                        thickness: 0.2,
+                        clearcoat: 1.0,
+                        clearcoatRoughness: 0.05,
+                        ior: 1.45,
+                        envMapIntensity: 0.35
                     });
                     child.material.needsUpdate = true;
                 }
@@ -535,9 +552,6 @@
         function animate() {
             requestAnimationFrame(animate);
             if (model && !in3DMode) model.rotation.y += 0.003;
-            if (in3DMode) {
-                directionalLight.position.copy(camera.position);
-            }
             controls.update();
             renderer.render(scene, camera);
         }
@@ -641,9 +655,6 @@
             else if (progress < split2) dots[1].classList.add("active");
             else dots[2].classList.add("active");
         }
-        const diamondNormalMap = new THREE.TextureLoader().load(
-            "textures/diamond_normal_map.jpg"
-        );
         const crystalTexture = new THREE.TextureLoader().load(
             "textures/crystal.jpg"
         );
@@ -669,15 +680,17 @@
                 model.traverse((child) => {
                     if (child.isMesh) {
                         child.material = new THREE.MeshPhysicalMaterial({
-                            map: crystalTexture,
-                            normalMap: diamondNormalMap,
-                            roughness: 0.3,
-                            metalness: 0.6,
-                            transmission: 0.7,
+                            map: child.material.map || crystalTexture, // fallback to crystal if no map
+                            roughness: 0.25,
+                            metalness: 0.2,
+                            transmission: 0.6,
                             transparent: true,
-                            opacity: 1.0,
+                            opacity: 0.95,
+                            thickness: 0.8,
                             clearcoat: 1.0,
-                            clearcoatRoughness: 0.1,
+                            clearcoatRoughness: 0.05,
+                            envMap: scene.environment,        // ✅ important
+                            envMapIntensity: 0.35,            // ✅ softer reflections
                         });
                         child.material.needsUpdate = true;
                     }
@@ -700,7 +713,6 @@
             camera.position.set(0, 2, 6);
             controls.target.set(0, -2, 0);
             controls.update();
-            directionalLight.position.copy(camera.position);
             if (textMesh) textMesh.visible = false;
             toggleSelectors(true);
             document.getElementById("leftText3D").style.display = "block";
@@ -846,7 +858,7 @@
                     overlay.style.opacity = 0;
                     setTimeout(() => {
                         overlay.style.backgroundImage = `url(${bgUrl})`;
-                        overlay.style.opacity = 0.5;
+                        overlay.style.opacity = 1;
                     }, 200);
                 }
 
