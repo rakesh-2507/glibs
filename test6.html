@@ -424,13 +424,17 @@
             .appendChild(renderer.domElement);
 
 
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(50, -6, 10);
-        scene.add(dirLight);
+        // Top (weaker light hitting upper 20%)
+        const topLight = new THREE.DirectionalLight(0xffffff, 0.01);
+        topLight.position.set(0, 8, 10); // angled from above
+        scene.add(topLight);
 
-        const fillLight = new THREE.DirectionalLight(0xffffff, 0.9);
-        fillLight.position.set(-5, 15, 10);
-        scene.add(fillLight);
+        // Bottom (stronger light for 80%)
+        const bottomLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        bottomLight.position.set(0, -5, 10); // angled upward
+        scene.add(bottomLight);
+
+
 
         const ambient = new THREE.AmbientLight(0xffffff, 0.1);
         scene.add(ambient);
