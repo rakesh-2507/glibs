@@ -411,7 +411,7 @@
             0.1,
             1000
         );
-        camera.position.set(10, 5, 10);
+        camera.position.set(8, 5, 10);
         const renderer = new THREE.WebGLRenderer({
             antialias: true,
             alpha: true,
@@ -466,7 +466,7 @@
 
         const loader = new THREE.GLTFLoader();
         let model, posX, posY, posZ, scaleX, scaleY, scaleZ;
-        loader.load("models/butter_milk.glb", function (gltf) {
+        loader.load("models/spiced.glb", function (gltf) {
             model = gltf.scene;
             model.position.set(-54, -30, 0.5);
             model.scale.set(
@@ -531,7 +531,7 @@
         fontLoader.load(
             "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json",
             function (font) {
-                const textGeometry = new THREE.TextGeometry("Gl bs", {
+                const textGeometry = new THREE.TextGeometry("Glibs", {
                     font: font,
                     size: 7.5,
                     height: 0.2,
@@ -544,14 +544,14 @@
                     opacity: 0,
                 });
                 textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                textMesh.position.set(-15, -5, 2);
-                textMesh.rotation.y = Math.PI * 0.29;
+                textMesh.position.set(-13, -4, 2.5);
+                textMesh.rotation.y = Math.PI * 0.2;
                 scene.add(textMesh);
             }
         );
         function animate() {
             requestAnimationFrame(animate);
-            if (model && !in3DMode) model.rotation.y += 0.003;
+            if (model && !in3DMode) model.rotation.y += 0.002;
             controls.update();
             renderer.render(scene, camera);
         }
@@ -578,15 +578,18 @@
                 if (progress < split1) {
                     let p1 = progress / split1;
                     if (posX) {
-                        posX(-8 + 5 * p1);
+                        posX(-7 + 5 * p1);
                         posY(-7 + 2 * p1);
                         posZ(1);
                     }
                     if (scaleX) {
-                        scaleX((6 - 1 * p1) * MODEL_SCALE_FACTOR);
-                        scaleY((5 - 1 * p1) * MODEL_SCALE_FACTOR);
+                        scaleX((4.5 - 1 * p1) * MODEL_SCALE_FACTOR);
+                        scaleY((5.1 - 1 * p1) * MODEL_SCALE_FACTOR);
                         scaleZ((6 - 1 * p1) * MODEL_SCALE_FACTOR);
                     }
+                    model.rotation.set(-0.15,0, 0);
+
+
                 } else if (progress < split2) {
                     if (posX) {
                         posX(5.5);
@@ -598,6 +601,10 @@
                         scaleY(2.5 * MODEL_SCALE_FACTOR);
                         scaleZ(2.5 * MODEL_SCALE_FACTOR);
                     }
+
+                    // ✅ Keep upright
+                    model.rotation.set(0.2,-0.5, 0);
+
                 } else {
                     let p3 = (progress - split2) / (1 - split2);
                     if (posX) {
@@ -610,6 +617,9 @@
                         scaleY((2.5 + (3.7 - 2.5) * p3) * MODEL_SCALE_FACTOR);
                         scaleZ((2.5 + (3.7 - 2.5) * p3) * MODEL_SCALE_FACTOR);
                     }
+
+                    // ✅ Keep upright
+                    model.rotation.set(0, 0, 0);
                 }
             }
             function showSection(section, opacity, translateX = 0) {
