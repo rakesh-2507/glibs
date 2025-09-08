@@ -424,15 +424,15 @@
             .appendChild(renderer.domElement);
 
 
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        dirLight.position.set(5, 1, 5);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(50, -6, 10);
         scene.add(dirLight);
 
-        const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
-        fillLight.position.set(-5, 5, -5);
+        const fillLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        fillLight.position.set(-5, 15, 10);
         scene.add(fillLight);
 
-        const ambient = new THREE.AmbientLight(0xffffff, 0.2);
+        const ambient = new THREE.AmbientLight(0xffffff, 0.1);
         scene.add(ambient);
 
 
@@ -466,9 +466,9 @@
 
         const loader = new THREE.GLTFLoader();
         let model, posX, posY, posZ, scaleX, scaleY, scaleZ;
-        loader.load("models/spiced.glb", function (gltf) {
+        loader.load("models/spiced3.glb", function (gltf) {
             model = gltf.scene;
-            model.position.set(-50, 0, 0);   
+            model.position.set(-50, 0, 0);
             model.scale.set(
                 MODEL_SCALE_FACTOR,
                 MODEL_SCALE_FACTOR,
@@ -481,20 +481,13 @@
                     child.castShadow = true;
                     child.receiveShadow = true;
 
-                    child.material = new THREE.MeshPhysicalMaterial({
-                        map: child.material.map || null,
-                        transparent: true,
-                        opacity: 0.95,
-                        roughness: 0.05,
-                        metalness: 0.1,
-                        transmission: 0.9,
-                        thickness: 0.2,
-                        clearcoat: 1.0,
-                        clearcoatRoughness: 0.05,
-                        ior: 1.45,
-                        envMapIntensity: 0.35
+                    model.traverse((child) => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
                     });
-                    child.material.needsUpdate = true;
+
                 }
             });
 
@@ -604,7 +597,7 @@
                     }
 
                     // ✅ Keep upright
-                    model.rotation.set(0,0, 0);
+                    model.rotation.set(0, 0, 0);
 
                 } else {
                     let p3 = (progress - split2) / (1 - split2);
