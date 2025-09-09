@@ -681,7 +681,7 @@
         function add3DLights() {
             remove3DLights();
 
-            const intensity = 0.7;
+            const intensity = 0.2;
             const dist = 10;
 
             const directions = [
@@ -692,20 +692,20 @@
                 [0, 0, dist],   // front
                 [0, 0, -dist],   // back
 
-                [dist, dist, dist],   // front-top-right
-                [-dist, dist, dist],   // front-top-left
-                [dist, -dist, dist],   // front-bottom-right
-                [-dist, -dist, dist],   // front-bottom-left
+                // [dist, dist, dist],   // front-top-right
+                // [-dist, dist, dist],   // front-top-left
+                // [dist, -dist, dist],   // front-bottom-right
+                // [-dist, -dist, dist],   // front-bottom-left
                 [dist, dist, -dist],   // back-top-right
-                [-dist, dist, -dist],   // back-top-left
+                // [-dist, dist, -dist],   // back-top-left
                 [dist, -dist, -dist],   // back-bottom-right
-                [-dist, -dist, -dist],   // back-bottom-left
+                // [-dist, -dist, -dist],   // back-bottom-left
             ];
 
             directions.forEach(([x, y, z]) => {
                 const light = new THREE.DirectionalLight(0xffffff, intensity);
                 light.position.set(x, y, z);
-                light.castShadow = true;
+                light.castShadow = false;
                 scene.add(light);
                 mode3DLights.push(light);
             });
