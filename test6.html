@@ -424,15 +424,26 @@
             .appendChild(renderer.domElement);
 
 
+        // // Top (weaker light hitting upper 20%)
+        // const topLight = new THREE.DirectionalLight(0xffffff, 1);
+        // topLight.position.set(0, -2, 10); // moved to right side
+        // scene.add(topLight);
+
+        // // Bottom (stronger light for 80%)
+        // const bottomLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        // bottomLight.position.set(15, 5, 5); // moved to right side
+        // scene.add(bottomLight);
         // Top (weaker light hitting upper 20%)
-        const topLight = new THREE.DirectionalLight(0xffffff, 1);
-        topLight.position.set(0, -2, 10); // moved to right side
+
+        const topLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        topLight.position.set(-10, 10, 10); // moved to right side
         scene.add(topLight);
 
         // Bottom (stronger light for 80%)
-        const bottomLight = new THREE.DirectionalLight(0xffffff, 0.3);
-        bottomLight.position.set(15, 5, 5); // moved to right side
+        const bottomLight = new THREE.DirectionalLight(0xffffff, 1);
+        bottomLight.position.set(3, -5, 10); // moved to right side
         scene.add(bottomLight);
+
 
         const ambient = new THREE.AmbientLight(0xffffff, 0.1);
         scene.add(ambient);
@@ -605,7 +616,7 @@
                     let p3 = (progress - split2) / (1 - split2);
                     if (posX) {
                         posX(5.5 + (-3 - 5.5) * p3);
-                        posY(-0.9 + (-3 + 0.9) * p3);
+                        posY(1 + (-3 + 0.9) * p3);
                         posZ(0.5 + (-3 - 0.5) * p3);
                     }
                     if (scaleX) {
@@ -664,6 +675,47 @@
         const crystalTexture = new THREE.TextureLoader().load(
             "textures/crystal.jpg"
         );
+
+        let mode3DLights = [];
+
+        function add3DLights() {
+            remove3DLights();
+
+            const intensity = 0.7;
+            const dist = 10;
+
+            const directions = [
+                [dist, 0, 0],   // right
+                [-dist, 0, 0],   // left
+                [0, dist, 0],   // top
+                [0, -dist, 0],   // bottom
+                [0, 0, dist],   // front
+                [0, 0, -dist],   // back
+
+                [dist, dist, dist],   // front-top-right
+                [-dist, dist, dist],   // front-top-left
+                [dist, -dist, dist],   // front-bottom-right
+                [-dist, -dist, dist],   // front-bottom-left
+                [dist, dist, -dist],   // back-top-right
+                [-dist, dist, -dist],   // back-top-left
+                [dist, -dist, -dist],   // back-bottom-right
+                [-dist, -dist, -dist],   // back-bottom-left
+            ];
+
+            directions.forEach(([x, y, z]) => {
+                const light = new THREE.DirectionalLight(0xffffff, intensity);
+                light.position.set(x, y, z);
+                light.castShadow = true;
+                scene.add(light);
+                mode3DLights.push(light);
+            });
+        }
+
+        function remove3DLights() {
+            mode3DLights.forEach(light => scene.remove(light));
+            mode3DLights = [];
+        }
+
         view3DBtn.addEventListener("click", () => {
             in3DMode = true;
             if (model) {
@@ -686,24 +738,20 @@
                 model.traverse((child) => {
                     if (child.isMesh) {
                         child.material = new THREE.MeshPhysicalMaterial({
-                            map: child.material.map || crystalTexture, // fallback to crystal if no map
-                            roughness: 0.25,
-                            metalness: 0.2,
-                            transmission: 0.6,
-                            transparent: true,
-                            opacity: 0.95,
-                            thickness: 0.8,
-                            clearcoat: 1.0,
-                            clearcoatRoughness: 0.05,
-                            envMap: scene.environment,        // ✅ important
-                            envMapIntensity: 0.35,            // ✅ softer reflections
+                            map: child.material.map || crystalTexture,
+                            roughness: 0.5,
+                            metalness: 0.1,
+                            clearcoat: 0.5,
+                            clearcoatRoughness: 0.2,
+                            envMap: scene.environment,
+                            envMapIntensity: 0.5,
                         });
                         child.material.needsUpdate = true;
                     }
                 });
                 gsap.to(model.position, {
                     x: 0,
-                    y: -3,
+                    y: -3.5,
                     z: 0,
                     duration: 0.45,
                     ease: "power2.out",
@@ -715,10 +763,18 @@
                     duration: 0.45,
                     ease: "power2.out",
                 });
+
+                gsap.to(model.rotation, {
+                    y: -Math.PI / 3.5,
+                    duration: 0.45,
+                    ease: "power2.out",
+                });
+
             }
             camera.position.set(0, 2, 6);
             controls.target.set(0, -2, 0);
             controls.update();
+            add3DLights();
             if (textMesh) textMesh.visible = false;
             toggleSelectors(true);
             document.getElementById("leftText3D").style.display = "block";
@@ -740,8 +796,9 @@
             controls.enableRotate = true;
             document.body.style.overflow = "auto";
             if (textMesh) textMesh.visible = true;
-            // Force reload without cache
+
             location.href = location.href;
+            remove3DLights();
 
         });
 
@@ -864,7 +921,7 @@
                     overlay.style.opacity = 0;
                     setTimeout(() => {
                         overlay.style.backgroundImage = `url(${bgUrl})`;
-                        overlay.style.opacity = 1;
+                        overlay.style.opacity = 0.4;
                     }, 200);
                 }
 
